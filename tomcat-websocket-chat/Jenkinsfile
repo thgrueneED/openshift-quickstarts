@@ -8,6 +8,7 @@ node {
       // **       in the global configuration.
       mvnHome = tool 'M3'
    }
+   dir('tomcat-websocket-chat'){
    stage('Build') {
       // Run the maven build
       if (isUnix()) {
@@ -18,6 +19,7 @@ node {
    }
    stage('Results') {
       archive '**/target/*.war'
+   }
    }
    /*
    stage('OSE BUILD ;-)'){
