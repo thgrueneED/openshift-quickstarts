@@ -24,7 +24,7 @@ node {
    
    stage('OSE BUILD ;-)'){
        env.SKIP_TLS=true
-   sh "oc login --token=UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ https://manage.playground.itandtel.at/"
+   sh 'oc login https://manage.cloud.itandtel.at --token=UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ'
    //sh "oc env -n 1-test-jenkins2 bc/kitchensink-eap-2 BUILD_NUMBER=${env.BUILD_NUMBER}"
   openshiftBuild apiURL: 'https://manage.playground.itandtel.at/', authToken: "UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ",
      bldCfg: 'jws-app1', buildName: '', checkForTriggeredDeployments: 'false', commitID: '', namespace: '48-thomas-test',
