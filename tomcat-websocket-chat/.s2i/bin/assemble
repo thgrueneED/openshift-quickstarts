@@ -1,4 +1,4 @@
 #!/bin/bash
 
 set -x
-curl -v -o /opt/webserver/webapps/ROOT.war https://jenkins2-48-thomas-test.cloud.itandtel.at/job/webchat/11/artifact/target/websocket-chat.war
+curl -v -o /opt/webserver/webapps/ROOT.war https://jenkins2-48-thomas-test.cloud.itandtel.at/job/webchat/12/artifact/target/websocket-chat.war
