@@ -1,4 +1,0 @@
-#!/bin/bash
-
-set -x
-curl -v -o /opt/webserver/webapps/websocket-chat.war https://jenkins2-48-thomas-test.cloud.itandtel.at/job/webchat/lastSuccessfulBuild/artifact/target/websocket-chat.war
