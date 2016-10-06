@@ -1,0 +1,30 @@
+node {
+   def mvnHome
+   stage('Preparation') { // for display purposes
+      // Get some code from a GitHub repository
+      checkout scm
+      // Get the Maven tool.
+      // ** NOTE: This 'M3' Maven tool must be configured
+      // **       in the global configuration.
+      mvnHome = tool 'M3'
+   }
+   stage('Build') {
+      // Run the maven build
+      if (isUnix()) {
+         sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+      } else {
+         bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+      }
+   }
+   stage('Results') {
+      archive '**/target/*.war'
+   }
+   /*
+   stage('OSE BUILD ;-)'){
+       env.SKIP_TLS=true
+   sh "oc login --token=${OSE_TOKEN} https://manage.playground.itandtel.at/"
+   sh "oc env -n 1-test-jenkins2 bc/kitchensink-eap-2 BUILD_NUMBER=${env.BUILD_NUMBER}"
+  openshiftBuild apiURL: 'https://manage.playground.itandtel.at/', authToken: "${OSE_TOKEN}", bldCfg: 'kitchensink-eap-2', buildName: '', checkForTriggeredDeployments: 'false', commitID: '', namespace: '1-test-jenkins2', showBuildLogs: 'true', verbose: 'true', waitTime: ''
+   }
+   */
+}
