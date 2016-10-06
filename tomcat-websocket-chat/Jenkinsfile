@@ -35,4 +35,15 @@ node {
 	openshiftVerifyDeployment apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
 	depCfg: 'jws-app1', namespace: '48-thomas-test', replicaCount: '1', verbose: 'true', verifyReplicaCount: 'true', waitTime: ''
    }
+   
+   stage('Tag Production') {
+	openshiftTag alias: 'true', apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
+	destStream: 'jws-app1', destTag: 'prod', destinationAuthToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', destinationNamespace: '48-thomas-test', 
+	namespace: '48-thomas-test', srcStream: 'jws-app1', srcTag: 'latest', verbose: 'true'
+   }
+   
+   stage('Verify Production') {
+	openshiftVerifyDeployment apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
+	depCfg: 'jws-app1-prod', namespace: '48-thomas-test', replicaCount: '1', verbose: 'true', verifyReplicaCount: 'true', waitTime: ''
+   }
 }
