@@ -20,9 +20,9 @@ node {
    stage('Results') {
       archive '**/target/*.war'
    }
-   }
+	}
    
-   stage('OSE BUILD ;-)'){
+	stage('OSE BUILD ;-)'){
        env.SKIP_TLS=true
    sh 'oc login https://manage.cloud.itandtel.at --token=UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ'
    sh "oc env -n 48-thomas-test bc/jws-app1 BUILD_NUMBER=${env.BUILD_NUMBER}"
@@ -30,4 +30,9 @@ node {
      bldCfg: 'jws-app1', buildName: '', checkForTriggeredDeployments: 'false', commitID: '', namespace: '48-thomas-test',
      showBuildLogs: 'true', verbose: 'true', waitTime: ''
    }
+   
+   stage('Verify Deployment') {
+	openshiftVerifyDeployment apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
+	depCfg: 'jws-app1', namespace: '48-thomas-test', replicaCount: '1', verbose: 'true', verifyReplicaCount: 'true', waitTime: ''
    }
+}
