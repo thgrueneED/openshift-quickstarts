@@ -127,7 +127,7 @@ input 'Delete Test-Server?'
 node{   
    stage('Delete TEST-Server') {
 	openshiftDeleteResourceByLabels apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
-	keys: 'application', namespace: '48-thomas-test', types: 'all', values: "jws-app1-test-${env.BUILD_NUMBER}", verbose: 'false'
+	keys: 'application', namespace: '48-thomas-test', types: 'dc', values: "jws-app1-test-${env.BUILD_NUMBER}", verbose: 'false'
    }
 
    
