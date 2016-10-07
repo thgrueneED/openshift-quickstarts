@@ -116,10 +116,20 @@ status: {}
 }
    
    
-   stage('Verify Deployment') {
+   stage('Verify TEST-Server') {
 	openshiftVerifyDeployment apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
-	depCfg: 'jws-app1', namespace: '48-thomas-test', replicaCount: '1', verbose: 'true', verifyReplicaCount: 'true', waitTime: ''
+	depCfg: "jws-app1-test-${env.BUILD_NUMBER}", namespace: '48-thomas-test', replicaCount: '1', verbose: 'true', verifyReplicaCount: 'true', waitTime: ''
    }
+}
+
+input 'Delete Test-Server?'
+
+node{   
+   stage('Delete TEST-Server') {
+	openshiftDeleteResourceByLabels apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
+	keys: 'application', namespace: '48-thomas-test', types: 'all', values: "jws-app1-test-${env.BUILD_NUMBER}", verbose: 'false'
+   }
+
    
    stage('Tag Production') {
 	openshiftTag alias: 'true', apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
