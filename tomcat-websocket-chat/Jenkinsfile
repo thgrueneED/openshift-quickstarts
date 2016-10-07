@@ -30,6 +30,91 @@ node {
      bldCfg: 'jws-app1', buildName: '', checkForTriggeredDeployments: 'false', commitID: '', namespace: '48-thomas-test',
      showBuildLogs: 'true', verbose: 'true', waitTime: ''
    }
+
+   stage('Tag TEST-SERVER') {
+	openshiftTag alias: 'true', apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
+	destStream: 'jws-app1', destTag: "${env.BUILD_NUMBER}", destinationAuthToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', destinationNamespace: '48-thomas-test', 
+	namespace: '48-thomas-test', srcStream: 'jws-app1', srcTag: 'latest', verbose: 'true'
+   }
+   
+	stage('CREATE TEST-SERVER ;-)'){
+		openshiftCreateResource apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', jsonyaml: """apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    openshift.io/deployment.cancelled: "2"
+  creationTimestamp: null
+  labels:
+    application: jws-app1-test-${env.BUILD_NUMBER}
+    template: jws30-tomcat7-basic-s2i
+    xpaas: 1.2.0
+  name: jws-app1-test-${env.BUILD_NUMBER}
+spec:
+  replicas: 1
+  selector:
+    deploymentConfig: jws-app1-test-${env.BUILD_NUMBER}
+  strategy:
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        application: jws-app1-test-${env.BUILD_NUMBER}
+        deploymentConfig: jws-app1-test-${env.BUILD_NUMBER}
+      name: jws-app1-test-${env.BUILD_NUMBER}
+    spec:
+      containers:
+      - env:
+        - name: JWS_ADMIN_USERNAME
+          value: admin
+        - name: JWS_ADMIN_PASSWORD
+          value: admin
+        image: jws-app1:${env.BUILD_NUMBER}
+        imagePullPolicy: Always
+        name: jws-app1-test-${env.BUILD_NUMBER}
+        ports:
+        - containerPort: 8778
+          name: jolokia
+          protocol: TCP
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - curl -s -u admin:admin \'http://localhost:8080/manager/jmxproxy/?get=Catalina%3Atype%3DServer&att=stateName\'
+              |grep -iq \'stateName *= *STARTED\'
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 60
+  test: false
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - jws-app1-test-${env.BUILD_NUMBER}
+      from:
+        kind: ImageStreamTag
+        name: jws-app1:${env.BUILD_NUMBER}
+        namespace: 48-thomas-test
+    type: ImageChange
+  - type: ConfigChange
+status: {}
+""", namespace: '48-thomas-test', verbose: 'true'
+}
+   
    
    stage('Verify Deployment') {
 	openshiftVerifyDeployment apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
