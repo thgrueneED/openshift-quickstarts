@@ -127,14 +127,14 @@ input 'Delete Test-Server?'
 node{   
    stage('Delete TEST-Server') {
 	openshiftDeleteResourceByLabels apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
-	keys: 'application', namespace: '48-thomas-test', types: 'dc', values: "jws-app1-test-${env.BUILD_NUMBER}", verbose: 'false'
+	keys: 'application', namespace: '48-thomas-test', types: 'dc,replicationcontroller,pod', values: "jws-app1-test-${env.BUILD_NUMBER}", verbose: 'false'
    }
 
    
    stage('Tag Production') {
 	openshiftTag alias: 'true', apiURL: 'https://manage.cloud.itandtel.at/', authToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', 
 	destStream: 'jws-app1', destTag: 'prod', destinationAuthToken: 'UnAlPRynbZZHmAtDpEb0zJiqKUlKTnopS10yK84UVsQ', destinationNamespace: '48-thomas-test', 
-	namespace: '48-thomas-test', srcStream: 'jws-app1', srcTag: 'latest', verbose: 'true'
+	namespace: '48-thomas-test', srcStream: 'jws-app1', srcTag: "${env.BUILD_NUMBER}", verbose: 'true'
    }
    
    stage('Verify Production') {
