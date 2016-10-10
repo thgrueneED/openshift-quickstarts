@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: tomcat-react
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: The web server's http port.
+    creationTimestamp: null
+    labels:
+      application: jws-app1
+      template: jws30-tomcat7-basic-s2i
+      xpaas: 1.2.0
+    name: jws-app1
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentConfig: jws-app1
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
